@@ -1,12 +1,6 @@
 import mongoose from "mongoose";
 
-interface User extends mongoose.Document {
-  username: string;
-  email: string;
-  password?: string; // Make the property optional by adding `?`
-}
-
-const userShema = new mongoose.Schema(
+const groupShema = new mongoose.Schema(
   {
     groupName: {
       type: String,
@@ -47,4 +41,5 @@ const userShema = new mongoose.Schema(
     timestamps: true,
   }
 );
-export default mongoose.model("Group", userShema);
+
+export default mongoose.model("Group", groupShema);
