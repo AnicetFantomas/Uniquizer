@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userShema = new mongoose.Schema(
+const membershipShema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -28,4 +28,4 @@ const userShema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("User", userShema);
+export default mongoose.model("User", membershipShema);
