@@ -8,14 +8,14 @@ interface User extends mongoose.Document {
 
 
 const userShema = new mongoose.Schema({
-    full_name : {
+    username : {
         type : String,
         required : true,
         unique : true,
         min: 3,
         max: 20
     },
-    phone_number : {
+    phoneNumber : {
         type : String,
         required : true
     },
