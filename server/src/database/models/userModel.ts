@@ -14,6 +14,7 @@ const userShema = new mongoose.Schema(
       unique: true,
       min: 3,
       max: 20,
+      trim: true,
     },
     phoneNumber: {
       type: String,
@@ -24,12 +25,25 @@ const userShema = new mongoose.Schema(
       required: true,
       unique: true,
       max: 50,
+      trim: true,
+      regexp: /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
     },
     password: {
       type: String,
       required: true,
-      min: 8,
+      minleght: 8,
+      select: false,
+      regexp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
     },
+    password_confirmation: {
+      type: String,
+      required: true,
+      select: false,
+    }, 
+    isVerified: {
+      type: Boolean,
+      default: false,
+    }
   },
   {
     timestamps: true,

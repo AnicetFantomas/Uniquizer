@@ -1,4 +1,4 @@
-import User from '../models/userModel';
+import User from '../database/models/userModel';
 import bcrypt from 'bcrypt';
 
 export const register = async (req:any, res:any, next:any) => {
