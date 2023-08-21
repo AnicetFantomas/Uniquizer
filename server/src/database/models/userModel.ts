@@ -1,19 +1,28 @@
 import mongoose from "mongoose";
 
-interface User extends mongoose.Document {
-  username: string;
+export interface IUser extends mongoose.Document {
+  _doc: any;
+  firstName: string;
+  phoneNumber: string;
+  lastName: string;
   email: string;
   password?: string; // Make the property optional by adding `?`
+  passwordConfirmation?: string;
+  isVerified: boolean;
 }
 
 const userShema = new mongoose.Schema(
   {
-    username: {
+    firstName: {
       type: String,
       required: true,
       unique: true,
-      min: 3,
-      max: 20,
+      trim: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+      unique: true,
       trim: true,
     },
     phoneNumber: {
@@ -35,7 +44,7 @@ const userShema = new mongoose.Schema(
       select: false,
       regexp: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
     },
-    password_confirmation: {
+    passwordConfirmation: {
       type: String,
       required: true,
       select: false,
@@ -50,4 +59,4 @@ const userShema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("User", userShema);
+export default mongoose.model<IUser>("User", userShema);
