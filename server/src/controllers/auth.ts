@@ -53,6 +53,7 @@ export const register = async (req: any, res: any, next: any) => {
       phoneNumber,
       email,
       password: hashedPassword,
+      passwordConfirmation: hashedPasswordConfirmation,
     });
 
     await newUser.save();
