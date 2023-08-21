@@ -30,3 +30,28 @@ const NotFoundResponse = (res: Response, message: String) => {
         message
     });
 }
+
+
+const BadRequestResponse = (res: Response, message: String) => {
+    return res.status(400).send({
+        status: 400,
+        message
+    });
+}
+
+const ConflictResponse = (res: Response, message: String) => {
+    return res.status(409).send({
+        status: 409,
+        message
+    });
+}
+
+export default {
+    SuccessResponse,
+    ErrorResponse,
+    ServerErrorResponse,
+    NotFoundResponse,
+    BadRequestResponse,
+    ConflictResponse
+};
+    
