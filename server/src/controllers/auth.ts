@@ -1,57 +1,39 @@
-import User from '../database/models/userModel';
-import bcrypt from 'bcrypt';
+import responseHandler from "../constants/responseHandler";
+import User from "../database/models/userModel";
+import bcrypt from "bcrypt";
 
-export const register = async (req:any, res:any, next:any) => {
-    try {
-        const {username, email, password} = req.body;
-        const usernameCheck = await User.findOne({username});
+export const register = async (req: any, res: any, next: any) => {
+  const { username, phoneNumber, email, password, password_confirmation } =
+    req.body;
 
-        if (usernameCheck) 
-            return res.json({msg: "username already exists", status: 400});
-            const emailCheck = await User.findOne({email});
-        if (emailCheck) 
-            return res.json({msg: "email already exists", status: 400});
-        
-        const hashedPassword = await bcrypt.hash(password, 10);
+  try {
+    const user = await User.findOne({ email: email });
+    if (user) {
+      return responseHandler.ConflictResponse(
+        res,
+        "User with this mail already exists"
+      );
+    }
+
+    const passwordRegex = new RegExp(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/
+    );
+    const emailRegex = new RegExp(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+
+    if (!passwordRegex.test(password)) {
+      return responseHandler.BadRequestResponse(res, "Password must be at least 8 characters long, contain at least 1 lowercase letter, 1 uppercase letter, 1 number and 1 special character");
+    }
+
+    if (!emailRegex.test(email)) {
+      return responseHandler.BadRequestResponse(res, "Invalid email");  
+    }
+
+    if (password !== password_confirmation) {
+      return responseHandler.BadRequestResponse(res, "Passwords do not match");
+    }
+
     
-        const user = await User.create({
-            username,
-            email,
-            password: hashedPassword
-        });
-
-        // delete user.password;
-
-        return res.json({msg: "user created", user, status: 201});
-    } catch (error) {
-        next(error);
-    }
-    
-}
-
-export const login = async (req:any, res:any, next:any) => {
-    try {
-        const {username, password} = req.body;
-        const user = await User.findOne({ username });
-
-        if (!user)
-            return res.json({msg: "Incorrect username or password", status: 404});
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid)
-            return res.json({msg: "Incorrect username or password", status: 404});
-
-        return res.json({user, status: 200});
-    } catch (error) {
-        next(error);
-    }
-}
-
-export const getAllUsers = async (req:any, res:any, next:any) => {
-    try {
-        const users = await User.find({_id: {$ne: req.params.id}}).select(["username", "email", "_id"]);
-        return res.json({users, status: 200});
-    } catch (err) { 
-        next(err);
-    }
-} 
+  } catch (error) {
+    next(error);
+  }
+};
