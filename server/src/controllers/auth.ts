@@ -83,6 +83,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  console.log(req.body);
 
   try {
     const user = await User.findOne({ email: email }).select("+password");
@@ -99,16 +100,49 @@ export const login = async (req: Request, res: Response) => {
       { id: user._id, email: user.email },
       process.env.JWT_SECRET as string,
       { expiresIn: "24h" }
-    )
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    const protectUserPassword = { ...user._doc };
+    delete protectUserPassword.password;
 
     return responseHandler.SuccessResponse(
-      res, {token}, "User logged in successfully"
-    )
+      res,
+      { user: protectUserPassword, token },
+      "User logged in successfully"
+    );
   } catch (error) {
     console.error(error); // Log the error for debugging purposes
     return responseHandler.ServerErrorResponse(
       res,
       "An error occurred during login. Please try again later."
     );
+
+    return responseHandler.BadRequestResponse(
+      res,
+      "Invalid JSON data in the request body"
+    );
   }
-}
+};
+
+// const logout = (req: Request, res: Response) => {
+//   try {
+//     req.session.destroy((err) => {
+//       if (err) {
+//         console.error('Session destroy failed', err);
+//         return res.status(500).json({ error: 'An error occurred during logout' });
+//       }
+//     });
+
+//     res.clearCookie('')
+
+//     return res.status(200).json({ message: 'Successfully logged out' });
+
+//   } catch (error) {
+
+//   }
+// }
