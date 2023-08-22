@@ -25,15 +25,15 @@ const groupShema = new mongoose.Schema(
       required: true,
     },
     members: 
-      {
+      [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-      },
+      }],
     messages: 
-      {
+      [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
-      },
+      }],
   },
   {
     timestamps: true,
