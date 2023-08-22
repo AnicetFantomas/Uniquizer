@@ -2,6 +2,10 @@ import responseHandler from "../constants/responseHandler";
 import User from "../database/models/userModel";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
   const {
@@ -76,3 +80,35 @@ export const register = async (req: Request, res: Response) => {
     );
   }
 };
+
+export const login = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email: email }).select("+password");
+    if (!user) {
+      return responseHandler.NotFoundResponse(res, "User not found");
+    }
+
+    const isPasswordValid = bcrypt.compare(password, user.password!);
+    if (!isPasswordValid) {
+      return responseHandler.BadRequestResponse(res, "Invalid password");
+    }
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET as string,
+      { expiresIn: "24h" }
+    )
+
+    return responseHandler.SuccessResponse(
+      res, {token}, "User logged in successfully"
+    )
+  } catch (error) {
+    console.error(error); // Log the error for debugging purposes
+    return responseHandler.ServerErrorResponse(
+      res,
+      "An error occurred during login. Please try again later."
+    );
+  }
+}
