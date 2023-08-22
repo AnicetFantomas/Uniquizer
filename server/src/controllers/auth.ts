@@ -129,20 +129,21 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// const logout = (req: Request, res: Response) => {
-//   try {
-//     req.session.destroy((err) => {
-//       if (err) {
-//         console.error('Session destroy failed', err);
-//         return res.status(500).json({ error: 'An error occurred during logout' });
-//       }
-//     });
+const logout = (req: Request, res: Response) => {
+  try {
+    req.app.locals.resetSession = false;
 
-//     res.clearCookie('')
-
-//     return res.status(200).json({ message: 'Successfully logged out' });
-
-//   } catch (error) {
-
-//   }
-// }
+    res.clearCookie("token");
+    return responseHandler.SuccessResponse(
+      res,
+      {},
+      "User logged out successfully"
+    );
+  } catch (error) {
+    console.error(error); // Log the error for debugging purposes
+    return responseHandler.ServerErrorResponse(
+      res,
+      "An error occurred during logout. Please try again later."
+    );
+  }
+}
