@@ -1,7 +1,7 @@
 import  {Response} from 'express';
 
 const SuccessResponse = (data: any, res: Response, message: String, pages?: number,page? :any ) => {
-    res.status(200).json({
+    return res.status(200).json({
         status: 200,
         message, 
         pages,
@@ -11,7 +11,7 @@ const SuccessResponse = (data: any, res: Response, message: String, pages?: numb
 }
 
 const ErrorResponse = (res: Response,status : number, message: String) => {
-    res.status(status).json({
+    return res.status(status).json({
         status,
         message
     });

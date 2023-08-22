@@ -1,8 +1,9 @@
 import responseHandler from "../constants/responseHandler";
 import User from "../database/models/userModel";
 import bcrypt from "bcrypt";
+import { Request, Response } from "express";
 
-export const register = async (req: any, res: any, next: any) => {
+export const register = async (req: Request, res: Response) => {
   const {
     firstName,
     lastName,
