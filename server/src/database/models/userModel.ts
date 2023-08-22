@@ -6,7 +6,7 @@ export interface IUser extends mongoose.Document {
   phoneNumber: string;
   lastName: string;
   email: string;
-  password?: string; // Make the property optional by adding `?`
+  password?: string; 
   passwordConfirmation?: string;
   isVerified: boolean;
 }
